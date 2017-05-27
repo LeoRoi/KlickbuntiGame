@@ -25,7 +25,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("layouts/matrix_display.fxml"));
-        primaryStage.setTitle("MatrixCalculator");
+        primaryStage.setTitle("ColorGame");
         setStageParams(primaryStage);
         primaryStage.setScene(createScene(root));
         primaryStage.show();
