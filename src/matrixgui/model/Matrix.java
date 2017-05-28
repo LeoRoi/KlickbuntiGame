@@ -40,7 +40,7 @@ final public class Matrix implements Serializable {
 
     /**
      * Constructor to create matrix based on 2-dim array
-     * @param data  Dimensions with data
+     * @param data  Dimensions with storedColor
      */
     public Matrix(double[][] data) {
         M = data.length;
