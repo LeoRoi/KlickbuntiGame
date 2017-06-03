@@ -38,10 +38,20 @@ public class MatrixDisplayController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         //Matrix A
-        matrixA = GameMatrix.randomWithReservedState(20, 15);
+        matrixA = GameMatrix.randomWithReservedState(5, 5);
 //        MatrixUtils.saveMatrix(matrixA, "matrixA");
         gridPaneA = GameUtils.createGridPaneFromGameMatrix(matrixA);
 //        MatrixUtils.displayMatrixOnGridPane(gridPaneA, matrixA);
         matrixAndMatrixHBox.getChildren().add(gridPaneA);
+
+        GameUtils gameUtils = new GameUtils(new GameUtils.Updatable() {
+            @Override
+            public void update(GameMatrix matrix) {
+                matrixAndMatrixHBox.getChildren().removeAll(gridPaneA);
+                gridPaneA = GameUtils.createGridPaneFromGameMatrix(matrix);
+                matrixAndMatrixHBox.getChildren().add(gridPaneA);
+            }
+        });
     }
+
 }

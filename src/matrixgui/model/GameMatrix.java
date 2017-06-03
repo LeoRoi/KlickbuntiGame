@@ -145,7 +145,7 @@ final public class GameMatrix implements Serializable {
         List<Column> list = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             boolean ok = false;
-            List<Data> listOfBoxes = null;
+            List<Data> listOfBoxes = new ArrayList<>();
             for (int j = 0; j < M; j++) {
                 if (this.data[j][i].equals("BLACKY")) {
                     ok = true;

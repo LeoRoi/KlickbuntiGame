@@ -9,6 +9,16 @@ import java.util.*;
 
 public class GameUtils {
 
+    static Updatable handler;
+
+    public interface Updatable {
+        void update(GameMatrix matrix);
+    }
+
+    public GameUtils(Updatable handler) {
+        this.handler = handler;
+    }
+
     // default constants
     public static final String STATIC_COLOR = "000000";
     public static final String TEST_STRING = "          ";
@@ -20,6 +30,7 @@ public class GameUtils {
     public static final String COLOR_FOUR = "c13f2e";
     public static final String COLOR_FIVE = "820987";
 
+
     public static List<String> colors = new ArrayList<>();
     private static Block listener;
 
@@ -27,8 +38,8 @@ public class GameUtils {
         colors.add(COLOR_ONE);
         colors.add(COLOR_TWO);
         colors.add(COLOR_THREE);
-        colors.add(COLOR_FOUR);
-        colors.add(COLOR_FIVE);
+//        colors.add(COLOR_FOUR);
+//        colors.add(COLOR_FIVE);
     }
 
     public static GridPane createGridPaneFromGameMatrix(GameMatrix matrix) {
@@ -79,7 +90,6 @@ public class GameUtils {
             }
         });
     }
-
 
 
     public static ArrayList<Data> findSameColorBlocks(ArrayList<Data> dataList, Data datagram, GameMatrix matrix, String color) {
@@ -208,23 +218,32 @@ public class GameUtils {
         // 2) update columns vertically
         for (Column column : lisOfColumns) {
             updateOneColumn(column, matrix);
-
-
-
-
         }
 
         matrix.show();
+        handler.update(matrix);
 
         // 3) collect columns to update horizontally
+//        List<Column> lisOfColumns2 = matrix.collectColumnsToDelete();
 
         // 4) update columns horizontally
     }
 
     private static void updateOneColumn(Column column, GameMatrix matrix) {
         for (Data data : column.getListOfBoxes()) {
-            
+            // update column once
+            int r = data.getRow();
+            int c = data.getColumn();
+            if (r != 0) {
+                matrix.data[r][c] = matrix.data[r - 1][c];
+            }
+            for (int i = 1; i < r; i++) {
+                matrix.data[r - i][c] = matrix.data[r - i - 1][c];
+            }
+            matrix.data[0][column.getColumnNumber()] = "SWITCHY";
+
         }
+
     }
 
 }
