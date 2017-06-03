@@ -1,20 +1,23 @@
 package matrixgui.model;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
-public class Block extends Button {
+public class Block extends Label {
 
     GameMatrix matrix;
     String color;
     int row;
     int column;
+    Data data;
 
     public Block(String text, GameMatrix matrix, String color, int row, int column) {
-        super(text);
+        super("     ");
         this.matrix = matrix;
         this.color = color;
         this.row = row;
         this.column = column;
+        this.data = new Data(row, column);
     }
 
     public String getColor() {
@@ -35,5 +38,9 @@ public class Block extends Button {
 
     public GameMatrix getMatrix() {
         return matrix;
+    }
+
+    public Data getData() {
+        return data;
     }
 }

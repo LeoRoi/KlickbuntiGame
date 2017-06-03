@@ -1,6 +1,8 @@
 package matrixgui.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,12 +28,13 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Constructor to create empty matrix with specified dimension
-     * @param M   Number of rows
-     * @param N   Number of columns
+     *
+     * @param M Number of rows
+     * @param N Number of columns
      */
     public GameMatrix(int M, int N) {
         if (M > 7 || N > 7) {
-            AlertBox.displayIllegalMatrixDimensionWarning();
+//            AlertBox.displayIllegalMatrixDimensionWarning();
         }
         this.M = M;
         this.N = N;
@@ -40,7 +43,8 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Constructor to create matrix based on 2-dim array
-     * @param data  Dimensions with storedColor
+     *
+     * @param data Dimensions with storedColor
      */
     public GameMatrix(String[][] data) {
         M = data.length;
@@ -53,7 +57,8 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Creates new Matrix from given Matrix
-     * @param A  Matrix to copy from
+     *
+     * @param A Matrix to copy from
      */
     private GameMatrix(GameMatrix A) {
         this(A.data);
@@ -62,9 +67,10 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Creates Matrix with random numbers based on the specified dimension
-     * @param rows      Number of rows
-     * @param columns   Number of columns
-     * @return          Matrix with random numbers with specified dimension
+     *
+     * @param rows    Number of rows
+     * @param columns Number of columns
+     * @return Matrix with random numbers with specified dimension
      */
     public static GameMatrix randomWithReservedState(int rows, int columns) {
         GameUtils.init();
@@ -80,6 +86,7 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Creates Matrix with random numbers from 2 to 6 dimensions
+     *
      * @return Matrix with random numbers from 2 to 6 dimensions
      */
     public static GameMatrix random() {
@@ -98,9 +105,10 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Creates random double number based on the specified range
-     * @param start   Start of the range
-     * @param end     End of the range
-     * @return        Random double number based on the specified range
+     *
+     * @param start Start of the range
+     * @param end   End of the range
+     * @return Random double number based on the specified range
      */
     public static double createRandomDouble(int start, int end) {
         double randomDouble = new Random().nextDouble();
@@ -110,6 +118,7 @@ final public class GameMatrix implements Serializable {
 
     /**
      * Creates transposed Matrix
+     *
      * @return transposed Matrix
      */
     public GameMatrix transpose() {
@@ -130,5 +139,72 @@ final public class GameMatrix implements Serializable {
                 System.out.printf(data[i][j] + "  ");
             System.out.println();
         }
+    }
+
+    public List<Column> collectColumnsToUpdateVertically() {
+        List<Column> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            boolean ok = false;
+            List<Data> listOfBoxes = new ArrayList<>();
+            for (int j = 0; j < M; j++) {
+                if (this.data[j][i].equals("BLACKY")) {
+                    ok = true;
+                    Data data = new Data(j, i);
+                    listOfBoxes.add(data);
+                }
+            }
+            if (ok) {
+                Column column = new Column(i, listOfBoxes);
+                list.add(column);
+            }
+        }
+        return list;
+    }
+
+    public List<Column> collectColumnsToUpdateHorizontally(int count) {
+        List<Column> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int incrementer = 0;
+            for (int j = 0; j < M; j++) {
+                if (this.data[j][i].equals("SWITCHY")) {
+                    incrementer++;
+                }
+            }
+            if (incrementer == this.M && i > count) {
+                Column column = new Column(i, null);
+                list.add(column);
+            }
+        }
+        return list;
+    }
+
+    public List<Data> findBlackies() {
+        List<Data> list = new ArrayList<>();
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.data[i][j].equals("BLACKY")) {
+                    list.add(new Data(i, j));
+                }
+            }
+        }
+        return list;
+    }
+
+
+    public List<Column> findSwitchies() {
+        List<Column> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int incrementer = 0;
+            for (int j = 0; j < M; j++) {
+                if (this.data[j][i].equals("SWITCHY")) {
+                    incrementer++;
+                }
+            }
+            if (incrementer == this.M) {
+                Column column = new Column(i, null);
+                list.add(column);
+            }
+        }
+        return list;
     }
 }
