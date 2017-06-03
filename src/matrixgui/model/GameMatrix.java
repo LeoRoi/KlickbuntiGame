@@ -177,4 +177,34 @@ final public class GameMatrix implements Serializable {
         }
         return list;
     }
+
+    public List<Data> findBlackies() {
+        List<Data> list = new ArrayList<>();
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (this.data[i][j].equals("BLACKY")) {
+                    list.add(new Data(i, j));
+                }
+            }
+        }
+        return list;
+    }
+
+
+    public List<Column> findSwitchies() {
+        List<Column> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int incrementer = 0;
+            for (int j = 0; j < M; j++) {
+                if (this.data[j][i].equals("SWITCHY")) {
+                    incrementer++;
+                }
+            }
+            if (incrementer == this.M) {
+                Column column = new Column(i, null);
+                list.add(column);
+            }
+        }
+        return list;
+    }
 }

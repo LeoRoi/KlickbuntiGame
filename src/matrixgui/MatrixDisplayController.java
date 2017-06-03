@@ -33,16 +33,50 @@ public class MatrixDisplayController implements Initializable {
     public VBox displayMatrixVbox;
     public HBox matrixAndMatrixHBox;
     private GridPane gridPaneA;
+    private Label label;
+    private Button undoButton;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        //Matrix A
+        //Matrix
         matrixA = GameMatrix.randomWithReservedState(15, 15);
+        GameUtils.undoMatrix = new GameMatrix(matrixA.data);
+        GameUtils.undoPoints = 0;
+        GameUtils.undoCountSwitchies = 0;
 //        MatrixUtils.saveMatrix(matrixA, "matrixA");
         gridPaneA = GameUtils.createGridPaneFromGameMatrix(matrixA);
-//        MatrixUtils.displayMatrixOnGridPane(gridPaneA, matrixA);
         matrixAndMatrixHBox.getChildren().add(gridPaneA);
+
+        // RATING
+        label = new Label();
+        displayMatrixVbox.getChildren().add(label);
+        label.setText("RATING");
+
+        // UNDO
+        undoButton = new Button();
+        displayMatrixVbox.getChildren().add(undoButton);
+        undoButton.setText("UNDO");
+        undoButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                // undo matrix
+                if (GameUtils.undoMatrix != null) {
+                    matrixAndMatrixHBox.getChildren().removeAll(gridPaneA);
+                    gridPaneA = GameUtils.createGridPaneFromGameMatrix(GameUtils.undoMatrix);
+                    matrixAndMatrixHBox.getChildren().add(gridPaneA);
+                    GameUtils.undoMatrix = new GameMatrix(GameUtils.undoMatrix.data);
+                }
+                // undo points
+                    displayMatrixVbox.getChildren().removeAll(label);
+                    label = new Label();
+                    label.setMaxWidth(150);
+                    label.setText("RATING : " + String.valueOf(GameUtils.undoPoints));
+                    GameUtils.points = GameUtils.undoPoints;
+                    displayMatrixVbox.getChildren().add(1, label);
+            }
+        });
 
         GameUtils gameUtils = new GameUtils(new GameUtils.Updatable() {
             @Override
@@ -51,7 +85,20 @@ public class MatrixDisplayController implements Initializable {
                 gridPaneA = GameUtils.createGridPaneFromGameMatrix(matrix);
                 matrixAndMatrixHBox.getChildren().add(gridPaneA);
             }
+
+            @Override
+            public void rate(int points) {
+                displayMatrixVbox.getChildren().removeAll(label);
+                label = new Label();
+                label.setMaxWidth(150);
+                label.setText("RATING : " + String.valueOf(points));
+                displayMatrixVbox.getChildren().add(1, label);
+            }
+
+
         });
+
+
     }
 
 }

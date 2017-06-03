@@ -9,10 +9,11 @@ import java.util.*;
 
 public class GameUtils {
 
-    static Updatable handler;
+    public static Updatable handler;
 
     public interface Updatable {
         void refresh(GameMatrix matrix);
+        void rate(int points);
     }
 
     public GameUtils(Updatable handler) {
@@ -33,6 +34,13 @@ public class GameUtils {
 
     public static List<String> colors = new ArrayList<>();
     private static Block listener;
+
+    public static int points;
+    public static int countSwitchies;
+    public static int undoCountSwitchies;
+    private static GameMatrix globalMatrix;
+    public static GameMatrix undoMatrix;
+    public static int undoPoints;
 
     public static void init() {
         colors.add(COLOR_ONE);
@@ -79,14 +87,32 @@ public class GameUtils {
             @Override
             public void handle(MouseEvent event) {
                 GameMatrix matrix = block.getMatrix();
+                undoMatrix = new GameMatrix(matrix.data);
+                undoPoints = points;
+                countSwitchies = undoCountSwitchies;
+                undoCountSwitchies = countSwitchies;
+
                 String color = block.getColor();
                 ArrayList<Data> deletionList = findSameColorBlocks(new ArrayList<>(), block.getData(), matrix, color);
                 if (deletionList.size() == 0) {
                     AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
                 } else {
+
+                    // find blackies
+                    List<Data> blackies = matrix.findBlackies();
+                    int n = blackies.size();
+                    points = 2 * n - 2 + points;
+
                     // refresh matrix
                     // display matrix
                     updateMatrix(matrix);
+
+                    // rate
+                    List<Column> switchies = matrix.findSwitchies();
+                    points = switchies.size() * 10 - (countSwitchies * 10) + points;
+                    System.out.println("Points: " + points);
+                    countSwitchies = switchies.size();
+                    handler.rate(points);
                 }
             }
         });
@@ -224,8 +250,8 @@ public class GameUtils {
         // 4) refresh columns horizontally
         for (int i = 0; i < matrix.getN(); i++) {
             updateMatrixPart2(matrix, 0);
-
         }
+
 
         matrix.show();
         handler.refresh(matrix);
@@ -240,8 +266,6 @@ public class GameUtils {
                 updateOneColumnHorizontally(column, matrix);
             }
         }
-
-
     }
 
     private static void updateOneColumnHorizontally(Column column, GameMatrix matrix) {
