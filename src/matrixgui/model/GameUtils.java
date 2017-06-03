@@ -4,11 +4,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import sun.rmi.runtime.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GameUtils {
 
@@ -68,60 +65,107 @@ public class GameUtils {
         block.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                List<Data> deletionList = findSameColorBlocks(block);
+                GameMatrix matrix = block.getMatrix();
+                String color = block.getColor();
+                ArrayList<Data> deletionList = findSameColorBlocks(new ArrayList<>(), block.getData(), matrix, color);
                 if (deletionList.size() == 0) {
                     AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
                 } else {
-                    createNewMatrix(deletionList, block.getMatrix());
+                    // update matrix
+                    updateMatrix(matrix);
+                    // display matrix
+
                 }
             }
         });
     }
 
-    private static GameMatrix createNewMatrix(List<Data> deletionList, GameMatrix oldMatrix) {
-        oldMatrix.show();
 
-        for (Data data : deletionList) {
-            deleteBlock(oldMatrix, data);
+
+    public static ArrayList<Data> findSameColorBlocks(ArrayList<Data> dataList, Data datagram, GameMatrix matrix, String color) {
+        int row = datagram.getRow();
+        int column = datagram.getColumn();
+
+        Data right = checkRight(matrix, color, row, column);
+        if (right != null) {
+            dataList.add(right);
+            // change matrix
+            changeMatrix(matrix, right, datagram);
+        }
+        Data left = checkLeft(matrix, color, row, column);
+        if (left != null) {
+            dataList.add(left);
+            changeMatrix(matrix, left, datagram);
+        }
+        Data top = checkTop(matrix, color, row, column);
+        if (top != null) {
+            dataList.add(top);
+            changeMatrix(matrix, top, datagram);
+        }
+
+        Data down = checkDown(matrix, color, row, column);
+        if (down != null) {
+            dataList.add(down);
+            changeMatrix(matrix, down, datagram);
+        }
+
+        System.out.println();
+        if (dataList.size() > 0) {
         }
 
 
+        System.out.println("Blocks to delete: " + dataList.size());
+        matrix.show();
+
+        for (Data data : dataList) {
+            findSameColorBlocks(new ArrayList<>(), data, matrix, color);
+        }
+
+        return dataList;
+
+    }
+
+    private static Data checkDown(GameMatrix matrix, String color, int row, int column) {
+        // check down
+        String down;
+        if (row != matrix.getM() - 1) {
+            if (matrix.data[row + 1][column].equals(color)) {
+                down = "same color " + color;
+                return new Data(row + 1, column);
+            } else {
+                down = "different color";
+            }
+        } else {
+            down = "no block";
+        }
+        System.out.println("Down " + down);
         return null;
     }
 
-    private static void deleteBlock(GameMatrix oldMatrix, Data data) {
-        oldMatrix.data[data.getRow()][data.getColumn()] = oldMatrix.data[data.getRow()][data.getColumn() - 1];
-    }
-
-    private static List<Data> findSameColorBlocks(Block block) {
-        List<Data> dataList = new ArrayList<>();
-        String color = block.getColor();
-        int row = block.getRow();
-        int column = block.getColumn();
-        GameMatrix matrix = block.getMatrix();
-
-        // check right
-        String right;
-        if (column != matrix.getN() - 1) {
-            if (matrix.data[row][column + 1].equals(color)) {
-                right = "same color " + color;
-                Data data = new Data(row, column);
-                dataList.add(data);
+    private static Data checkTop(GameMatrix matrix, String color, int row, int column) {
+        // check top
+        String top;
+        if (row != 0) {
+            if (matrix.data[row - 1][column].equals(color)) {
+                top = "same color " + color;
+                return new Data(row - 1, column);
             } else {
-                right = "different color";
+                top = "different color";
             }
         } else {
-            right = "no block";
+            top = "no block";
         }
-        System.out.println("Right " + right);
+        System.out.println("Top " + top);
+        return null;
+    }
 
+    private static Data checkLeft(GameMatrix matrix, String color, int row, int column) {
         // check left
         String left;
         if (column != 0) {
             if (matrix.data[row][column - 1].equals(color)) {
                 left = "same color " + color;
-                Data data = new Data(row, column);
-                dataList.add(data);
+                return new Data(row, column - 1);
             } else {
                 left = "different color";
             }
@@ -130,37 +174,57 @@ public class GameUtils {
         }
         System.out.println("Left " + left);
 
-        // check top
-        String top;
-        if (row != 0) {
-            if (matrix.data[row - 1][column].equals(color)) {
-                top = "same color " + color;
-                Data data = new Data(row, column);
-                dataList.add(data);
-            } else {
-                top = "different color";
-            }
-        } else {
-            top = "no block";
-        }
-        System.out.println("Top " + top);
-
-        // check down
-        String down;
-        if (row != matrix.getM() - 1) {
-            if (matrix.data[row + 1][column].equals(color)) {
-                down = "same color " + color;
-                Data data = new Data(row, column);
-                dataList.add(data);
-            } else {
-                down = "different color";
-            }
-        } else {
-            down = "no block";
-        }
-        System.out.println("Down " + down);
-        System.out.println();
-
-        return dataList;
+        return null;
     }
+
+    private static Data checkRight(GameMatrix matrix, String color, int row, int column) {
+        // check right
+        String right;
+        if (column != matrix.getN() - 1) {
+            if (matrix.data[row][column + 1].equals(color)) {
+                right = "same color " + color;
+                return new Data(row, column + 1);
+            } else {
+                right = "different color";
+            }
+        } else {
+            right = "no block";
+        }
+        System.out.println("Right " + right);
+        return null;
+    }
+
+    private static void changeMatrix(GameMatrix matrix, Data catched, Data source) {
+        matrix.data[catched.getRow()][catched.getColumn()] = "BLACKY";
+        matrix.data[source.getRow()][source.getColumn()] = "BLACKY";
+    }
+
+    private static void updateMatrix(GameMatrix matrix) {
+        // 1) collect columns
+        List<Column> lisOfColumns = matrix.collectColumnsToUpdate();
+        for (Column column : lisOfColumns) {
+            System.out.println("Column " + column.getColumnNumber() + "");
+        }
+        // 2) update columns vertically
+        for (Column column : lisOfColumns) {
+            updateOneColumn(column, matrix);
+
+
+
+
+        }
+
+        matrix.show();
+
+        // 3) collect columns to update horizontally
+
+        // 4) update columns horizontally
+    }
+
+    private static void updateOneColumn(Column column, GameMatrix matrix) {
+        for (Data data : column.getListOfBoxes()) {
+            
+        }
+    }
+
 }

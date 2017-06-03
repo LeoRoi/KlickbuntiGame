@@ -37,7 +37,7 @@ public class Main extends Application {
      * @param primaryStage  Primary Stage to display a scene
      */
     public static void setStageParams(Stage primaryStage) {
-        primaryStage.setMaxWidth(1600);
+        primaryStage.setMaxWidth(800);
         primaryStage.setMaxHeight(800);
     }
 

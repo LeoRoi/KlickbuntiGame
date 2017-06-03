@@ -16,6 +16,7 @@ import matrixgui.model.GameUtils;
 import matrixgui.model.Matrix;
 import matrixgui.utils.MatrixUtils;
 
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,11 +34,11 @@ public class MatrixDisplayController implements Initializable {
     public HBox matrixAndMatrixHBox;
     private GridPane gridPaneA;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         //Matrix A
-        matrixA = GameMatrix.randomWithReservedState(6, 6);
+        matrixA = GameMatrix.randomWithReservedState(20, 15);
 //        MatrixUtils.saveMatrix(matrixA, "matrixA");
         gridPaneA = GameUtils.createGridPaneFromGameMatrix(matrixA);
 //        MatrixUtils.displayMatrixOnGridPane(gridPaneA, matrixA);
