@@ -12,7 +12,7 @@ public class GameUtils {
     static Updatable handler;
 
     public interface Updatable {
-        void update(GameMatrix matrix);
+        void refresh(GameMatrix matrix);
     }
 
     public GameUtils(Updatable handler) {
@@ -38,8 +38,8 @@ public class GameUtils {
         colors.add(COLOR_ONE);
         colors.add(COLOR_TWO);
         colors.add(COLOR_THREE);
-//        colors.add(COLOR_FOUR);
-//        colors.add(COLOR_FIVE);
+        colors.add(COLOR_FOUR);
+        colors.add(COLOR_FIVE);
     }
 
     public static GridPane createGridPaneFromGameMatrix(GameMatrix matrix) {
@@ -47,16 +47,18 @@ public class GameUtils {
         GridPane gridPane = new GridPane();
         gridPane = new GridPane();
         gridPane.setPadding(new Insets(10, 10, 10, 10));
-        gridPane.setVgap(8);
-        gridPane.setHgap(10);
 
         for (int i = 0; i < matrix.getM(); i++) {
             for (int j = 0; j < matrix.getN(); j++) {
                 Block block = new Block(TEST_STRING, matrix, matrix.data[i][j], i, j);
-                block.setStyle("-fx-background-color: #" + block.getColor());
-                block.setMaxHeight(100);
-                block.setWrapText(true);
-                block.setText(TEST_STRING);
+                if (block.getColor().equals("SWITCHY")) {
+                    block.setStyle("-fx-background-color: #" + "000000; \n" + "-fx-border-color: white;");
+                } else {
+                    block.setStyle("-fx-background-color: #" + block.getColor() + "; \n" + "-fx-border-color: white;");
+                }
+
+                block.setMinHeight(30);
+                block.setMinWidth(30);
                 setListener(block);
                 gridPane.add(block, j, i);
             }
@@ -82,10 +84,9 @@ public class GameUtils {
                 if (deletionList.size() == 0) {
                     AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
                 } else {
-                    // update matrix
-                    updateMatrix(matrix);
+                    // refresh matrix
                     // display matrix
-
+                    updateMatrix(matrix);
                 }
             }
         });
@@ -211,27 +212,56 @@ public class GameUtils {
 
     private static void updateMatrix(GameMatrix matrix) {
         // 1) collect columns
-        List<Column> lisOfColumns = matrix.collectColumnsToUpdate();
+        List<Column> lisOfColumns = matrix.collectColumnsToUpdateVertically();
         for (Column column : lisOfColumns) {
             System.out.println("Column " + column.getColumnNumber() + "");
         }
-        // 2) update columns vertically
+        // 2) refresh columns vertically
         for (Column column : lisOfColumns) {
-            updateOneColumn(column, matrix);
+            updateOneColumnVertically(column, matrix);
+        }
+        // 3) collect columns to refresh horizontally
+        // 4) refresh columns horizontally
+        for (int i = 0; i < matrix.getN(); i++) {
+            updateMatrixPart2(matrix, 0);
+
         }
 
         matrix.show();
-        handler.update(matrix);
+        handler.refresh(matrix);
 
-        // 3) collect columns to update horizontally
-//        List<Column> lisOfColumns2 = matrix.collectColumnsToDelete();
-
-        // 4) update columns horizontally
     }
 
-    private static void updateOneColumn(Column column, GameMatrix matrix) {
+    private static void updateMatrixPart2(GameMatrix matrix, int count) {
+        List<Column> lisOfColumns2 = matrix.collectColumnsToUpdateHorizontally(count);
+        System.out.println(lisOfColumns2.size());
+        if (lisOfColumns2.size() > count) {
+            for (Column column : lisOfColumns2) {
+                updateOneColumnHorizontally(column, matrix);
+            }
+        }
+
+
+    }
+
+    private static void updateOneColumnHorizontally(Column column, GameMatrix matrix) {
+//         refresh column once
+        int r = matrix.getM() - 1;
+        int c = column.getColumnNumber();
+        if (c != 0) {
+            matrix.data[r][c] = matrix.data[r][c - 1];
+            matrix.data[r][c - 1] = "SWITCHY";
+        }
+        for (int i = 1; i < r + 1; i++) {
+            matrix.data[r - i][c] = matrix.data[r - i][c - 1];
+            matrix.data[r - i][c - 1] = "SWITCHY";
+        }
+
+    }
+
+    private static void updateOneColumnVertically(Column column, GameMatrix matrix) {
         for (Data data : column.getListOfBoxes()) {
-            // update column once
+            // refresh column once
             int r = data.getRow();
             int c = data.getColumn();
             if (r != 0) {
@@ -241,7 +271,6 @@ public class GameUtils {
                 matrix.data[r - i][c] = matrix.data[r - i - 1][c];
             }
             matrix.data[0][column.getColumnNumber()] = "SWITCHY";
-
         }
 
     }

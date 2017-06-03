@@ -141,7 +141,7 @@ final public class GameMatrix implements Serializable {
         }
     }
 
-    public List<Column> collectColumnsToUpdate() {
+    public List<Column> collectColumnsToUpdateVertically() {
         List<Column> list = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             boolean ok = false;
@@ -151,11 +151,27 @@ final public class GameMatrix implements Serializable {
                     ok = true;
                     Data data = new Data(j, i);
                     listOfBoxes.add(data);
-
                 }
             }
             if (ok) {
                 Column column = new Column(i, listOfBoxes);
+                list.add(column);
+            }
+        }
+        return list;
+    }
+
+    public List<Column> collectColumnsToUpdateHorizontally(int count) {
+        List<Column> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int incrementer = 0;
+            for (int j = 0; j < M; j++) {
+                if (this.data[j][i].equals("SWITCHY")) {
+                    incrementer++;
+                }
+            }
+            if (incrementer == this.M && i > count) {
+                Column column = new Column(i, null);
                 list.add(column);
             }
         }
