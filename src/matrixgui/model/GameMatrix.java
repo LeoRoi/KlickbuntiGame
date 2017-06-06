@@ -1,5 +1,7 @@
 package matrixgui.model;
 
+import matrixgui.GameUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,13 +74,13 @@ final public class GameMatrix implements Serializable {
      * @param columns Number of columns
      * @return Matrix with random numbers with specified dimension
      */
-    public static GameMatrix randomWithReservedState(int rows, int columns) {
-        GameUtils.init();
+    public static GameMatrix randomWithReservedState(int rows, int columns, int numberOfColors) {
+        GameUtils.init(5);
         Random random = new Random();
         GameMatrix A = new GameMatrix(rows, columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++) {
-                String result = GameUtils.getRandomColor();
+                String result = GameUtils.getRandomColor(numberOfColors);
                 A.data[i][j] = result;
             }
         return A;
@@ -89,15 +91,15 @@ final public class GameMatrix implements Serializable {
      *
      * @return Matrix with random numbers from 2 to 6 dimensions
      */
-    public static GameMatrix random() {
-        GameUtils.init();
+    public static GameMatrix random(int numberOfColors) {
+        GameUtils.init(5);
         Random random = new Random();
         int M = (int) createRandomDouble(2, 7);
         int N = (int) createRandomDouble(2, 7);
         GameMatrix A = new GameMatrix(M, N);
         for (int i = 0; i < M; i++)
             for (int j = 0; j < N; j++) {
-                String result = GameUtils.getRandomColor();
+                String result = GameUtils.getRandomColor(numberOfColors);
                 A.data[i][j] = result;
             }
         return A;
