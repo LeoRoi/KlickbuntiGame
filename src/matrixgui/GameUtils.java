@@ -1,18 +1,21 @@
-package matrixgui.model;
+package matrixgui;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import matrixgui.model.*;
 
 import java.util.*;
 
 public class GameUtils {
 
+
     public static Updatable handler;
 
     public interface Updatable {
         void refresh(GameMatrix matrix);
+
         void rate(int points);
     }
 
@@ -21,7 +24,6 @@ public class GameUtils {
     }
 
     // default constants
-    public static final String STATIC_COLOR = "000000";
     public static final String TEST_STRING = "          ";
 
     // colors
@@ -32,7 +34,7 @@ public class GameUtils {
     public static final String COLOR_FIVE = "820987";
 
 
-    public static List<String> colors = new ArrayList<>();
+    public static List<String> colors;
     private static Block listener;
 
     public static int points;
@@ -42,16 +44,45 @@ public class GameUtils {
     public static GameMatrix undoMatrix;
     public static int undoPoints;
 
-    public static void init() {
-        colors.add(COLOR_ONE);
-        colors.add(COLOR_TWO);
-        colors.add(COLOR_THREE);
-        colors.add(COLOR_FOUR);
-        colors.add(COLOR_FIVE);
+    public static void init(int numberOfColors) {
+        colors = new ArrayList<>();
+        switch (numberOfColors) {
+            case 1:
+                colors.add(COLOR_ONE);
+                break;
+            case 2:
+                colors.add(COLOR_ONE);
+                colors.add(COLOR_TWO);
+                break;
+            case 3:
+                colors.add(COLOR_ONE);
+                colors.add(COLOR_TWO);
+                colors.add(COLOR_THREE);
+                break;
+            case 4:
+                colors.add(COLOR_ONE);
+                colors.add(COLOR_TWO);
+                colors.add(COLOR_THREE);
+                colors.add(COLOR_FOUR);
+                break;
+            case 5:
+                colors.add(COLOR_ONE);
+                colors.add(COLOR_TWO);
+                colors.add(COLOR_THREE);
+                colors.add(COLOR_FOUR);
+                colors.add(COLOR_FIVE);
+                break;
+            default:
+                colors.add(COLOR_ONE);
+                colors.add(COLOR_TWO);
+                colors.add(COLOR_THREE);
+                colors.add(COLOR_FOUR);
+                colors.add(COLOR_FIVE);
+        }
     }
 
     public static GridPane createGridPaneFromGameMatrix(GameMatrix matrix) {
-        init();
+        init(5);
         GridPane gridPane = new GridPane();
         gridPane = new GridPane();
         gridPane.setPadding(new Insets(10, 10, 10, 10));
@@ -65,8 +96,8 @@ public class GameUtils {
                     block.setStyle("-fx-background-color: #" + block.getColor() + "; \n" + "-fx-border-color: white;");
                 }
 
-                block.setMinHeight(30);
-                block.setMinWidth(30);
+                block.setMinHeight(15);
+                block.setMinWidth(15);
                 setListener(block);
                 gridPane.add(block, j, i);
             }
@@ -74,8 +105,8 @@ public class GameUtils {
         return gridPane;
     }
 
-    public static String getRandomColor() {
-        init();
+    public static String getRandomColor(int numberOfColors) {
+        init(numberOfColors);
         Collections.shuffle(colors);
         String color = colors.get(0);
         colors.clear();
@@ -95,9 +126,13 @@ public class GameUtils {
                 String color = block.getColor();
                 ArrayList<Data> deletionList = findSameColorBlocks(new ArrayList<>(), block.getData(), matrix, color);
                 if (deletionList.size() == 0) {
-                    AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
+                    List<Column> checkies = matrix.findSwitchies();
+                    if (checkies.size() > matrix.getN() / 10 * 9) {
+                        AlertBox.display("You lost", "Try again");
+                    } else {
+                        AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
+                    }
                 } else {
-
                     // find blackies
                     List<Data> blackies = matrix.findBlackies();
                     int n = blackies.size();
@@ -109,6 +144,10 @@ public class GameUtils {
 
                     // rate
                     List<Column> switchies = matrix.findSwitchies();
+                    if (switchies.size() == matrix.getN()) {
+                        AlertBox.display("Hurray", "You won");
+                    }
+
                     points = switchies.size() * 10 - (countSwitchies * 10) + points;
                     System.out.println("Points: " + points);
                     countSwitchies = switchies.size();
@@ -147,10 +186,6 @@ public class GameUtils {
         }
 
         System.out.println();
-        if (dataList.size() > 0) {
-        }
-
-
         System.out.println("Blocks to delete: " + dataList.size());
         matrix.show();
 
