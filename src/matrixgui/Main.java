@@ -25,7 +25,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("layouts/matrix_display.fxml"));
-        primaryStage.setTitle("ColorGame");
+        primaryStage.setTitle("Klickibunti");
         setStageParams(primaryStage);
         primaryStage.setScene(createScene(root));
         primaryStage.show();
@@ -48,8 +48,7 @@ public class Main extends Application {
      * @return      Scene to display
      */
     public static Scene createScene(Parent root) {
-        Scene scene = new Scene(root, 1600, 800);
+        Scene scene = new Scene(root, 700, 400);
         return scene;
     }
-
 }

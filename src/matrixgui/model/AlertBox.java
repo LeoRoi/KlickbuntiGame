@@ -30,27 +30,4 @@ public class AlertBox {
         window.setScene(scene);
         window.showAndWait();
     }
-
-    public static void displayIllegalMatrixDimensionWarning() {
-        Stage window = new Stage();
-
-        //Block events to other windows
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Error");
-        window.setMinWidth(250);
-
-        Label label = new Label();
-        label.setText("Wrong matrix dimension, please try again");
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> window.close());
-
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(label, closeButton);
-        layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout);
-        window.setScene(scene);
-        window.showAndWait();
-    }
-
 }

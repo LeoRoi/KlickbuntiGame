@@ -3,6 +3,11 @@ package matrixgui.model;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+/**
+ * class represents a gaming stone
+ * which has particular coordinates & color
+ * for grid implementation
+ */
 public class Block extends Label {
 
     GameMatrix matrix;

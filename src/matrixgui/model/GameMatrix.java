@@ -35,9 +35,6 @@ final public class GameMatrix implements Serializable {
      * @param N Number of columns
      */
     public GameMatrix(int M, int N) {
-        if (M > 7 || N > 7) {
-//            AlertBox.displayIllegalMatrixDimensionWarning();
-        }
         this.M = M;
         this.N = N;
         data = new String[M][N];
@@ -46,7 +43,7 @@ final public class GameMatrix implements Serializable {
     /**
      * Constructor to create matrix based on 2-dim array
      *
-     * @param data Dimensions with storedColor
+     * @param data Dimensions with stored color
      */
     public GameMatrix(String[][] data) {
         M = data.length;
@@ -76,7 +73,7 @@ final public class GameMatrix implements Serializable {
      */
     public static GameMatrix randomWithReservedState(int rows, int columns, int numberOfColors) {
         GameUtils.init(5);
-        Random random = new Random();
+        //Random random = new Random();
         GameMatrix A = new GameMatrix(rows, columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++) {
@@ -93,7 +90,7 @@ final public class GameMatrix implements Serializable {
      */
     public static GameMatrix random(int numberOfColors) {
         GameUtils.init(5);
-        Random random = new Random();
+        //Random random = new Random();
         int M = (int) createRandomDouble(2, 7);
         int N = (int) createRandomDouble(2, 7);
         GameMatrix A = new GameMatrix(M, N);
@@ -115,20 +112,6 @@ final public class GameMatrix implements Serializable {
     public static double createRandomDouble(int start, int end) {
         double randomDouble = new Random().nextDouble();
         return start + (randomDouble * (end - start));
-    }
-
-
-    /**
-     * Creates transposed Matrix
-     *
-     * @return transposed Matrix
-     */
-    public GameMatrix transpose() {
-        GameMatrix A = new GameMatrix(N, M);
-        for (int i = 0; i < M; i++)
-            for (int j = 0; j < N; j++)
-                A.data[j][i] = this.data[i][j];
-        return A;
     }
 
 

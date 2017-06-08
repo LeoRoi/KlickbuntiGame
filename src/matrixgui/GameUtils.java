@@ -15,7 +15,6 @@ public class GameUtils {
 
     public interface Updatable {
         void refresh(GameMatrix matrix);
-
         void rate(int points);
     }
 
@@ -33,7 +32,6 @@ public class GameUtils {
     public static final String COLOR_FOUR = "c13f2e";
     public static final String COLOR_FIVE = "820987";
 
-
     public static List<String> colors;
     private static Block listener;
 
@@ -44,6 +42,10 @@ public class GameUtils {
     public static GameMatrix undoMatrix;
     public static int undoPoints;
 
+    /**
+     * Initialize a list with different colors
+     * @param numberOfColors user selection
+     */
     public static void init(int numberOfColors) {
         colors = new ArrayList<>();
         switch (numberOfColors) {
@@ -84,27 +86,34 @@ public class GameUtils {
     public static GridPane createGridPaneFromGameMatrix(GameMatrix matrix) {
         init(5);
         GridPane gridPane = new GridPane();
-        gridPane = new GridPane();
         gridPane.setPadding(new Insets(10, 10, 10, 10));
 
-        for (int i = 0; i < matrix.getM(); i++) {
-            for (int j = 0; j < matrix.getN(); j++) {
+        for (int i = 0; i < matrix.getM(); i++) { // rows
+            for (int j = 0; j < matrix.getN(); j++) { // columns
                 Block block = new Block(TEST_STRING, matrix, matrix.data[i][j], i, j);
                 if (block.getColor().equals("SWITCHY")) {
                     block.setStyle("-fx-background-color: #" + "000000; \n" + "-fx-border-color: white;");
-                } else {
+                }
+                else {
                     block.setStyle("-fx-background-color: #" + block.getColor() + "; \n" + "-fx-border-color: white;");
                 }
 
                 block.setMinHeight(15);
                 block.setMinWidth(15);
                 setListener(block);
+
+                // object, column & row index of the cell in which the object should be displayed
                 gridPane.add(block, j, i);
             }
         }
         return gridPane;
     }
 
+    /**
+     * get a random color from the list
+     * @param numberOfColors
+     * @return chosen random color
+     */
     public static String getRandomColor(int numberOfColors) {
         init(numberOfColors);
         Collections.shuffle(colors);
@@ -113,6 +122,11 @@ public class GameUtils {
         return color;
     }
 
+    /**
+     * Actions beyond each stone-click:
+     * save current state, calculate, update
+     * @param block
+     */
     public static void setListener(Block block) {
         block.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -130,13 +144,14 @@ public class GameUtils {
                     if (checkies.size() > matrix.getN() / 10 * 9) {
                         AlertBox.display("You lost", "Try again");
                     } else {
-                        AlertBox.display("Sorry", "There is no blocks matching the same color. Try again");
+                        AlertBox.display("Sorry", "There are no blocks matching the same color. Try again");
                     }
-                } else {
+                }
+                else {
                     // find blackies
                     List<Data> blackies = matrix.findBlackies();
                     int n = blackies.size();
-                    points = 2 * n - 2 + points;
+                    points += 2 * n - 2;
 
                     // refresh matrix
                     // display matrix
@@ -157,7 +172,14 @@ public class GameUtils {
         });
     }
 
-
+    /**
+     * the actual checking algorithm
+     * @param dataList
+     * @param datagram
+     * @param matrix
+     * @param color
+     * @return
+     */
     public static ArrayList<Data> findSameColorBlocks(ArrayList<Data> dataList, Data datagram, GameMatrix matrix, String color) {
         int row = datagram.getRow();
         int column = datagram.getColumn();
