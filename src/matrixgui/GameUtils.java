@@ -26,19 +26,16 @@ public class GameUtils {
     public static final String TEST_STRING = "          ";
 
     // colors
-    public static final String COLOR_ONE = "f4ad42";
-    public static final String COLOR_TWO = "2e9645";
-    public static final String COLOR_THREE = "3b257c";
-    public static final String COLOR_FOUR = "c13f2e";
-    public static final String COLOR_FIVE = "820987";
-
+    public static final String COLOR_ONE = "f4ad42";    //yellow
+    public static final String COLOR_TWO = "2e9645";    //green
+    public static final String COLOR_THREE = "3b257c";  //blue
+    public static final String COLOR_FOUR = "c13f2e";   //orange
+    public static final String COLOR_FIVE = "820987";   //purple
     public static List<String> colors;
-    private static Block listener;
 
     public static int points;
     public static int countSwitchies;
     public static int undoCountSwitchies;
-    private static GameMatrix globalMatrix;
     public static GameMatrix undoMatrix;
     public static int undoPoints;
 
@@ -83,6 +80,11 @@ public class GameUtils {
         }
     }
 
+    /**
+     * convert matrix to grid pane
+     * @param matrix to be converted
+     * @return created grid pane
+     */
     public static GridPane createGridPaneFromGameMatrix(GameMatrix matrix) {
         init(5);
         GridPane gridPane = new GridPane();
@@ -141,9 +143,12 @@ public class GameUtils {
                 ArrayList<Data> deletionList = findSameColorBlocks(new ArrayList<>(), block.getData(), matrix, color);
                 if (deletionList.size() == 0) {
                     List<Column> checkies = matrix.findSwitchies();
+
+                    // IF doesn't work, but ELSE
                     if (checkies.size() > matrix.getN() / 10 * 9) {
                         AlertBox.display("You lost", "Try again");
-                    } else {
+                    }
+                    else {
                         AlertBox.display("Sorry", "There are no blocks matching the same color. Try again");
                     }
                 }
@@ -163,7 +168,7 @@ public class GameUtils {
                         AlertBox.display("Hurray", "You won");
                     }
 
-                    points = switchies.size() * 10 - (countSwitchies * 10) + points;
+                    points += switchies.size() * 10 - (countSwitchies * 10);
                     System.out.println("Points: " + points);
                     countSwitchies = switchies.size();
                     handler.rate(points);
@@ -190,11 +195,13 @@ public class GameUtils {
             // change matrix
             changeMatrix(matrix, right, datagram);
         }
+
         Data left = checkLeft(matrix, color, row, column);
         if (left != null) {
             dataList.add(left);
             changeMatrix(matrix, left, datagram);
         }
+
         Data top = checkTop(matrix, color, row, column);
         if (top != null) {
             dataList.add(top);
@@ -214,11 +221,17 @@ public class GameUtils {
         for (Data data : dataList) {
             findSameColorBlocks(new ArrayList<>(), data, matrix, color);
         }
-
         return dataList;
-
     }
 
+    /**
+     * see if the down-neighbour has the same color
+     * @param matrix
+     * @param color
+     * @param row
+     * @param column
+     * @return
+     */
     private static Data checkDown(GameMatrix matrix, String color, int row, int column) {
         // check down
         String down;
@@ -236,6 +249,14 @@ public class GameUtils {
         return null;
     }
 
+    /**
+     * see if the top-neighbour has the same color
+     * @param matrix
+     * @param color
+     * @param row
+     * @param column
+     * @return
+     */
     private static Data checkTop(GameMatrix matrix, String color, int row, int column) {
         // check top
         String top;
@@ -253,6 +274,14 @@ public class GameUtils {
         return null;
     }
 
+    /**
+     * see if the left-neighbour has the same color
+     * @param matrix
+     * @param color
+     * @param row
+     * @param column
+     * @return
+     */
     private static Data checkLeft(GameMatrix matrix, String color, int row, int column) {
         // check left
         String left;
@@ -271,6 +300,14 @@ public class GameUtils {
         return null;
     }
 
+    /**
+     * see if the right-neighbour has the same color
+     * @param matrix
+     * @param color
+     * @param row
+     * @param column
+     * @return
+     */
     private static Data checkRight(GameMatrix matrix, String color, int row, int column) {
         // check right
         String right;
@@ -288,11 +325,21 @@ public class GameUtils {
         return null;
     }
 
+    /**
+     * change the stone color to black
+     * @param matrix
+     * @param catched
+     * @param source
+     */
     private static void changeMatrix(GameMatrix matrix, Data catched, Data source) {
         matrix.data[catched.getRow()][catched.getColumn()] = "BLACKY";
         matrix.data[source.getRow()][source.getColumn()] = "BLACKY";
     }
 
+    /**
+     * reload game field
+     * @param matrix
+     */
     private static void updateMatrix(GameMatrix matrix) {
         // 1) collect columns
         List<Column> lisOfColumns = matrix.collectColumnsToUpdateVertically();
@@ -309,12 +356,15 @@ public class GameUtils {
             updateMatrixPart2(matrix, 0);
         }
 
-
         matrix.show();
         handler.refresh(matrix);
-
     }
 
+    /**
+     * reload game field
+     * @param matrix
+     * @param count
+     */
     private static void updateMatrixPart2(GameMatrix matrix, int count) {
         List<Column> lisOfColumns2 = matrix.collectColumnsToUpdateHorizontally(count);
         System.out.println(lisOfColumns2.size());
@@ -325,8 +375,13 @@ public class GameUtils {
         }
     }
 
+    /**
+     * reload just a single column horizontally
+     * @param column
+     * @param matrix
+     */
     private static void updateOneColumnHorizontally(Column column, GameMatrix matrix) {
-//         refresh column once
+        // refresh column one
         int r = matrix.getM() - 1;
         int c = column.getColumnNumber();
         if (c != 0) {
@@ -337,9 +392,13 @@ public class GameUtils {
             matrix.data[r - i][c] = matrix.data[r - i][c - 1];
             matrix.data[r - i][c - 1] = "SWITCHY";
         }
-
     }
 
+    /**
+     * reload just a single column vertically
+     * @param column
+     * @param matrix
+     */
     private static void updateOneColumnVertically(Column column, GameMatrix matrix) {
         for (Data data : column.getListOfBoxes()) {
             // refresh column once
@@ -353,7 +412,5 @@ public class GameUtils {
             }
             matrix.data[0][column.getColumnNumber()] = "SWITCHY";
         }
-
     }
-
 }
