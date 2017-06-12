@@ -6,9 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/*
+Created in IntelliJ IDEA 2017.1.4
+so it may not run in other IDEs
+ */
 
 /**
  * Main class that extends {@link Application} in order for JavaFX to work
+ * @autor Konstantin Kochetov 559121
+ * @autor Andrej Loparev 557966
  */
 public class Main extends Application {
 
@@ -19,36 +25,14 @@ public class Main extends Application {
     /**
      * Method that gets resources and launch the main scene
      *
-     * @param primaryStage  Primary Stage to display a scene
-     * @throws Exception   throws Exception if there is no resources provided
+     * @param primaryStage Primary Stage to display a scene
+     * @throws Exception throws Exception if there is no resources provided
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("layouts/matrix_display.fxml"));
         primaryStage.setTitle("Klickibunti");
-        setStageParams(primaryStage);
-        primaryStage.setScene(createScene(root));
+        primaryStage.setScene(new Scene(root, 700, 400));
         primaryStage.show();
-    }
-
-    /**
-     * Set default stage width and height
-     *
-     * @param primaryStage  Primary Stage to display a scene
-     */
-    public static void setStageParams(Stage primaryStage) {
-        primaryStage.setMaxWidth(1200);
-        primaryStage.setMaxHeight(800);
-    }
-
-    /**
-     * Creates default scene
-     *
-     * @param root  FXML resource for the Scene
-     * @return      Scene to display
-     */
-    public static Scene createScene(Parent root) {
-        Scene scene = new Scene(root, 700, 400);
-        return scene;
     }
 }

@@ -2,6 +2,9 @@ package matrixgui.model;
 
 import java.util.List;
 
+/**
+ * one column from the game field
+ */
 public class Column {
 
     private int columnNumber;

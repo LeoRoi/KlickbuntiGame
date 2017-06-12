@@ -55,16 +55,6 @@ final public class GameMatrix implements Serializable {
     }
 
     /**
-     * Creates new Matrix from given Matrix
-     *
-     * @param A Matrix to copy from
-     */
-    private GameMatrix(GameMatrix A) {
-        this(A.data);
-    }
-
-
-    /**
      * Creates Matrix with random numbers based on the specified dimension
      *
      * @param rows    Number of rows
@@ -73,7 +63,6 @@ final public class GameMatrix implements Serializable {
      */
     public static GameMatrix randomWithReservedState(int rows, int columns, int numberOfColors) {
         GameUtils.init(5);
-        //Random random = new Random();
         GameMatrix A = new GameMatrix(rows, columns);
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++) {
@@ -90,7 +79,6 @@ final public class GameMatrix implements Serializable {
      */
     public static GameMatrix random(int numberOfColors) {
         GameUtils.init(5);
-        //Random random = new Random();
         int M = (int) createRandomDouble(2, 7);
         int N = (int) createRandomDouble(2, 7);
         GameMatrix A = new GameMatrix(M, N);
@@ -163,6 +151,10 @@ final public class GameMatrix implements Serializable {
         return list;
     }
 
+    /**
+     * collect all the deleted pieces
+     * @return list with black blocks
+     */
     public List<Data> findBlackies() {
         List<Data> list = new ArrayList<>();
         for (int i = 0; i < M; i++) {
@@ -175,7 +167,10 @@ final public class GameMatrix implements Serializable {
         return list;
     }
 
-
+    /**
+     * collect all pieces with similar color, so they may change their color to black
+     * @return list with switch blocks
+     */
     public List<Column> findSwitchies() {
         List<Column> list = new ArrayList<>();
         for (int i = 0; i < N; i++) {

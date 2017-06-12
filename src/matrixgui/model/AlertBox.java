@@ -6,6 +6,10 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.geometry.*;
 
+/**
+ * pop-up window with a certain message to be prompted from user
+ * window-title & message itself are given as arguments
+ */
 public class AlertBox {
 
     public static void display(String title, String message) {

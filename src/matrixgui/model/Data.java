@@ -1,5 +1,8 @@
 package matrixgui.model;
 
+/**
+ * coordinates
+ */
 public class Data {
 
     int row;

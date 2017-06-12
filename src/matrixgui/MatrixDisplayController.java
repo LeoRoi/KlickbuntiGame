@@ -27,8 +27,7 @@ public class MatrixDisplayController implements Initializable {
     private GameMatrix matrixA;
 
     // UI
-    // matrices calculations
-    //public VBox displayMatrixVbox;
+    // game field
     public HBox matrixAndMatrixHBox;
     private GridPane gridPaneA;
     private Label label;
@@ -40,12 +39,12 @@ public class MatrixDisplayController implements Initializable {
 
     int numberOfColors;
 
-    // Color block
+    // Control panel: Color block
     public Label labelPromptForColor;
     public TextField textFieldPromptForColor;
     public Button buttonPromptForColor;
 
-    // game field block
+    // Control panel: game field block
     public Label labelPromptForLines;
     public TextField textFieldPromptForRows;
     public TextField textFieldPromptForColumns;
@@ -87,7 +86,10 @@ public class MatrixDisplayController implements Initializable {
         undoButton.setText("UNDO");
         undoButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-
+            /**
+             * action for UNDO button
+             * @param event
+             */
             @Override
             public void handle(MouseEvent event) {
 
@@ -109,7 +111,12 @@ public class MatrixDisplayController implements Initializable {
             }
         });
 
+
         gameUtils = new GameUtils(new GameUtils.Updatable() {
+            /**
+             * reload game field
+             * @param matrix info about current game state
+             */
             @Override
             public void refresh(GameMatrix matrix) {
                 matrixAndMatrixHBox.getChildren().removeAll(gridPaneA);
@@ -117,6 +124,10 @@ public class MatrixDisplayController implements Initializable {
                 matrixAndMatrixHBox.getChildren().add(0, gridPaneA);
             }
 
+            /**
+             * reload control panel
+             * @param points rating
+             */
             @Override
             public void rate(int points) {
                 secondColumnVbox.getChildren().removeAll(label);
@@ -127,6 +138,7 @@ public class MatrixDisplayController implements Initializable {
             }
         });
 
+        // miscellanea reload
         setPromptForColor();
         setListenersPromptForColor();
         setPromptForRows();
@@ -181,7 +193,6 @@ public class MatrixDisplayController implements Initializable {
                 else {
                     AlertBox.display("Error", "Please use numbers between 2 and 5");
                 }
-
             }
         });
     }

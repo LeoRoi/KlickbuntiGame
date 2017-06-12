@@ -8,8 +8,10 @@ import matrixgui.model.*;
 
 import java.util.*;
 
+/**
+ * intelligent back-bone of the game
+ */
 public class GameUtils {
-
 
     public static Updatable handler;
 
@@ -113,7 +115,7 @@ public class GameUtils {
 
     /**
      * get a random color from the list
-     * @param numberOfColors
+     * @param numberOfColors chosen by user
      * @return chosen random color
      */
     public static String getRandomColor(int numberOfColors) {
@@ -127,7 +129,7 @@ public class GameUtils {
     /**
      * Actions beyond each stone-click:
      * save current state, calculate, update
-     * @param block
+     * @param block game piece
      */
     public static void setListener(Block block) {
         block.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -144,10 +146,11 @@ public class GameUtils {
                 if (deletionList.size() == 0) {
                     List<Column> checkies = matrix.findSwitchies();
 
-                    // IF doesn't work, but ELSE
+                    // somehow IF-block doesn't work
                     if (checkies.size() > matrix.getN() / 10 * 9) {
                         AlertBox.display("You lost", "Try again");
                     }
+                    // this block works fine
                     else {
                         AlertBox.display("Sorry", "There are no blocks matching the same color. Try again");
                     }
@@ -158,8 +161,7 @@ public class GameUtils {
                     int n = blackies.size();
                     points += 2 * n - 2;
 
-                    // refresh matrix
-                    // display matrix
+                    // reload matrix
                     updateMatrix(matrix);
 
                     // rate
@@ -168,6 +170,7 @@ public class GameUtils {
                         AlertBox.display("Hurray", "You won");
                     }
 
+                    // reload points
                     points += switchies.size() * 10 - (countSwitchies * 10);
                     System.out.println("Points: " + points);
                     countSwitchies = switchies.size();
@@ -178,9 +181,9 @@ public class GameUtils {
     }
 
     /**
-     * the actual checking algorithm
-     * @param dataList
-     * @param datagram
+     * the checking algorithm: whether the neighborhood has similar color or not
+     * @param dataList gathers info about what to delete
+     * @param datagram provides actual coordinates
      * @param matrix
      * @param color
      * @return
