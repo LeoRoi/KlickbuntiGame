@@ -146,11 +146,9 @@ public class GameUtils {
                 if (deletionList.size() == 0) {
                     List<Column> checkies = matrix.findSwitchies();
 
-                    // somehow IF-block doesn't work
                     if (checkies.size() > matrix.getN() / 10 * 9) {
                         AlertBox.display("You lost", "Try again");
                     }
-                    // this block works fine
                     else {
                         AlertBox.display("Sorry", "There are no blocks matching the same color. Try again");
                     }

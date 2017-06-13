@@ -12,7 +12,7 @@ so it may not run in other IDEs
  */
 
 /**
- * Main class that extends {@link Application} in order for JavaFX to work
+ * Main class with {@link Application} for JavaFX
  * @autor Konstantin Kochetov 559121
  * @autor Andrej Loparev 557966
  */
@@ -26,7 +26,7 @@ public class Main extends Application {
      * Method that gets resources and launch the main scene
      *
      * @param primaryStage Primary Stage to display a scene
-     * @throws Exception throws Exception if there is no resources provided
+     * @throws Exception when no resources available
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
