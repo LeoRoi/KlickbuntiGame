@@ -13,8 +13,8 @@ so it may not run in other IDEs
 
 /**
  * Main class with {@link Application} for JavaFX
- * @autor Konstantin Kochetov 559121
- * @autor Andrej Loparev 557966
+ * @autor Konstantin K. 559121
+ * @autor Andrej L. 557966
  */
 public class Main extends Application {
 
