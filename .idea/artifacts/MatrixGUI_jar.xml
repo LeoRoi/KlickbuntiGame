@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="MatrixGUI:jar">
-    <output-path>$PROJECT_DIR$/MatrixGUI_jar</output-path>
-    <root id="archive" name="MatrixGUI.jar">
-      <element id="module-output" name="MatrixGUI" />
-    </root>
-  </artifact>
-</component>
