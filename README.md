@@ -1,6 +1,6 @@
 ### Klickbunti
 
-!(/intro.jpg?raw=true "gui")
+![Screenshot](intro.jpg)
 
 - game made with JavaFX
 - destroy same colored neighbor stones by clicking on them
